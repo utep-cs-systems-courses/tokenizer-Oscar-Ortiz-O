@@ -46,3 +46,27 @@ char *word_terminator(char *word)
   }
 }
 
+
+int count_words(char *str)
+{
+  int count = 0;
+  str = word_start(str);
+
+  while (*str != '\0'){
+    count = count + 1;
+    str = word_terminator(str);
+    str = word_start(str);
+  }
+  return count;
+}
+
+
+char *copy_str(char *inStr, short len)
+{
+  char *newStr = (char*)malloc(len * sizeof(char));
+
+  for (int i = 0; i < len; ++i){
+    newStr[i] = inStr[i];
+  }
+  return newStr;
+}
