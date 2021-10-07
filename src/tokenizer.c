@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "tokenizer.h"
 
 int space_char(char c)
 {
@@ -21,17 +22,12 @@ int non_space_char(char c)
 
 char *word_start(char *str)
 {
-  int hasWhitespace = 0;
   while (*str != '\0'){
     if (space_char(*str)){
       str = str + 1;
-      hasWhitespace = 1;
       continue;
     }
-    if (hasWhitespace){
-      return str;
-    }
-    str = str + 1;
+    return str;
   }
   return str;
 }
@@ -45,6 +41,7 @@ char *word_terminator(char *word)
     }
     word = word + 1;
   }
+  return word;
 }
 
 
@@ -71,4 +68,53 @@ char *copy_str(char *inStr, short len)
   }
   newStr[len] = '\0';
   return newStr;
+}
+
+char **tokenize(char *str)
+{
+  int numOfWords = count_words(str);
+  char **tokens = malloc((numOfWords + 1) * sizeof(char*));
+  char *tempStr;
+  
+  for (int i = 0; i < numOfWords; ++i) {
+    str = word_start(str);
+    int count = 0;
+    tempStr = str;
+    
+    while(non_space_char(*tempStr) && *tempStr != '\0') {
+      count = count + 1;
+      tempStr = tempStr + 1;
+    }
+    tokens[i] = copy_str(str, count);
+    str = word_terminator(str);
+  }
+  tokens[numOfWords] = '\0';
+  return tokens;
+}
+
+void print_tokens(char **tokens)
+{
+  while (*tokens) {
+    printf("%s\n", *tokens);
+    tokens++;
+  }
+}
+
+int main()
+{
+  printf("Working!\n");
+
+  char str[100] = " hello world !";
+  char *wow;
+  wow = &str[0];
+
+  int count = count_words(wow);
+  printf("%d\n", count);
+
+  copy_str(wow, 5);
+
+  char **tokens = tokenize(wow);
+  print_tokens(tokens);
+  
+  return 0;
 }
